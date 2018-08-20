@@ -6,8 +6,8 @@
     <groupId>com.renchaigao.zujuba</groupId>
     <artifactId>user-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <!--<packaging>jar</packaging>-->
+    <!--<packaging>war</packaging>-->
+    <packaging>jar</packaging>
 
     <name>user-server</name>
     <description>Demo project for Spring Boot</description>
@@ -36,16 +36,16 @@
                     <groupId>com.fasterxml.jackson.core</groupId>
                 </exclusion>
                 <!--移除嵌入式tomcat插件-->
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
+                <!--<exclusion>-->
+                    <!--<groupId>org.springframework.boot</groupId>-->
+                    <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+                <!--</exclusion>-->
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
         <!--kafka-->
         <dependency>
@@ -225,7 +225,7 @@
         <!--merge-->
         <dependency>
             <groupId>com.renchaigao.zujuba</groupId>
-            <artifactId>merge</artifactId>
+            <artifactId>mergeJAR</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!-- spring data mongodb -->

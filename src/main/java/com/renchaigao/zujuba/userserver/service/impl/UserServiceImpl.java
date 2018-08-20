@@ -52,6 +52,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     AddressMapper addressMapper;
 
+    @Autowired
+    UserOpenInfoMapper userOpenInfoMapper;
+
     @Override
 //    自动登陆
     public ResponseEntity autoLoginUser(User userApp) {
@@ -128,6 +131,9 @@ public class UserServiceImpl implements UserService {
                 /*  为user 配置相应的属性； */
                 //配置id属性;
                 userRet.setId(UUIDUtil.getUUID());
+
+//              注册码注册，密码初始为123456
+                userRet.setUserPWD("123456");
                 //配置age属性;
                 userRet.setAge("0");
                 //配置ageLevel属性;
@@ -207,9 +213,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity getUserInfo(User userApp) {
+        long startTime = System.currentTimeMillis();    //获取开始时间
         UserInfo userInfo = mongoTemplate.findById(userApp.getId(), UserInfo.class);
         if (userInfo == null)//没有userInfo，创建一个在MongoDB里。
         {
+
+            User userSQL = userMapper.selectByPrimaryKey(userApp.getId());
 //            先将user内的信息付给userInfo
             userInfo = JSONObject.parseObject(JSONObject.toJSONString(userApp), UserInfo.class);
             /*  创建各个object */
@@ -274,11 +283,15 @@ public class UserServiceImpl implements UserService {
 
 //          创建user的openInfo
             UserOpenInfo userOpenInfo = new UserOpenInfo();
-            userOpenInfo.setId(userApp.getMyOpenInfoId());
+            userOpenInfo = JSONObject.parseObject(JSONObject.toJSONString(userSQL),UserOpenInfo.class);
             userOpenInfo.setUpTime(dateUse.GetStringDateNow());
             userOpenInfo.setDeleteStyle(false);
+            mongoTemplate.save(userOpenInfo);
 
             mongoTemplate.save(userInfo);
+
+            long endTime = System.currentTimeMillis();    //获取结束时间
+            logger.debug("create userinfo has spend time is : " + (endTime - startTime));
             return new ResponseEntity(RespCode.USERINFOADD, userInfo);
         } else {
             userInfo.setMyTeamsInfo(mongoTemplate.findById(userApp.getMyTeamsId(), myTeamsInfo.class));
@@ -292,7 +305,7 @@ public class UserServiceImpl implements UserService {
             userInfo.setMyFreiendInfo(mongoTemplate.findById(userApp.getMyFriendInfoId(), userFriendInfo.class));
 //          创建myIntegrationInfo
 //          更新userOpenInfo信息
-            userInfo.setUserOpenInfo(mongoTemplate.findById(userApp.getMyOpenInfoId(),UserOpenInfo.class));
+            userInfo.setUserOpenInfo(userOpenInfoMapper.selectByPrimaryKey(userApp.getId()));
 //          创建peopleList
             userInfo.setMyPermissionInfo(mongoTemplate.findById(userApp.getMyPermissionInfoId(), userPermissionInfo.class));
             userInfo.setUpTime(dateUse.GetStringDateNow());
@@ -303,6 +316,9 @@ public class UserServiceImpl implements UserService {
 //            mongoTemplate.updateFirst(Query.query(criteria), update, UserInfo.class);
 //            logger.error(JSONObject.toJSONString(userInfo));
 //        List<TeamInfo> teamInfoList = mongoTemplate.find(Query.query(criteria), TeamInfo.class);
+
+            long endTime = System.currentTimeMillis();    //获取结束时间
+            logger.debug("update userinfo has spend time is : " + (endTime - startTime));
             return new ResponseEntity(RespCode.SUCCESS, userInfo);
         }
     }
@@ -450,6 +466,9 @@ public class UserServiceImpl implements UserService {
 //                break;
 //            case "myPermissionInfo":
 //                break;
+            case "UserOpenInfo":
+                userMongoDB.setUserOpenInfo(userOpenInfoMapper.selectByPrimaryKey(userMongoDB.getUserOpenInfo().getId()));
+                break;
         }
         mongoTemplate.save(userMongoDB, "userInfo");
         return new ResponseEntity(RespCode.SUCCESS, userMongoDB);

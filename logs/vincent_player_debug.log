@@ -274,3 +274,60 @@ Caused by: java.net.ConnectException: Connection timed out: connect
 2018-08-16 16:14:20  [ http-nio-7801-exec-2:69 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
 2018-08-16 16:14:29  [ http-nio-7801-exec-2:8970 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
 2018-08-16 16:14:29  [ http-nio-7801-exec-2:9046 ] - [ DEBUG ]  {conn-10001, pstmt-20002} enter cache
+2018-08-18 16:46:54  [ http-nio-7801-exec-1:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-18 16:46:54  [ http-nio-7801-exec-1:82 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-18 16:46:54  [ http-nio-7801-exec-1:143 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-18 16:47:47  [ http-nio-7801-exec-5:53159 ] - [ DEBUG ]  {conn-10002, pstmt-20002} enter cache
+2018-08-18 16:49:04  [ Thread-7:129989 ] - [ DEBUG ]  {conn-10001, pstmt-20001} exit cache
+2018-08-18 16:49:04  [ Thread-7:129990 ] - [ DEBUG ]  {conn-10001, pstmt-20000} exit cache
+2018-08-18 16:49:04  [ Thread-7:129993 ] - [ DEBUG ]  {conn-10002, pstmt-20002} exit cache
+2018-08-18 16:49:04  [ Thread-7:129994 ] - [ INFO ]  {dataSource-1} closed
+2018-08-18 16:49:28  [ http-nio-7801-exec-1:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-18 16:49:28  [ http-nio-7801-exec-1:59 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-18 16:49:28  [ http-nio-7801-exec-1:114 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-18 16:50:18  [ http-nio-7801-exec-2:49976 ] - [ DEBUG ]  {conn-10001, pstmt-20002} enter cache
+2018-08-18 16:50:18  [ http-nio-7801-exec-2:50142 ] - [ DEBUG ]  {conn-10001, pstmt-20003} enter cache
+2018-08-18 16:51:22  [ http-nio-7801-exec-5:114570 ] - [ DEBUG ]  {conn-10001, pstmt-20004} enter cache
+2018-08-18 16:51:22  [ http-nio-7801-exec-5:114592 ] - [ DEBUG ]  {conn-10001, pstmt-20005} enter cache
+2018-08-18 17:15:54  [ http-nio-7801-exec-1:1586460 ] - [ DEBUG ]  {conn-10001, pstmt-20006} enter cache
+2018-08-18 17:15:54  [ http-nio-7801-exec-1:1586506 ] - [ DEBUG ]  {conn-10001, pstmt-20007} enter cache
+2018-08-18 17:38:47  [ Thread-7:2958942 ] - [ DEBUG ]  {conn-10001, pstmt-20001} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958948 ] - [ DEBUG ]  {conn-10001, pstmt-20002} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958949 ] - [ DEBUG ]  {conn-10001, pstmt-20003} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958949 ] - [ DEBUG ]  {conn-10001, pstmt-20006} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958950 ] - [ DEBUG ]  {conn-10001, pstmt-20007} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958950 ] - [ DEBUG ]  {conn-10001, pstmt-20000} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958950 ] - [ DEBUG ]  {conn-10001, pstmt-20004} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958953 ] - [ DEBUG ]  {conn-10001, pstmt-20005} exit cache
+2018-08-18 17:38:47  [ Thread-7:2958959 ] - [ INFO ]  {dataSource-1} closed
+2018-08-18 17:41:30  [ http-nio-7801-exec-1:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-18 17:41:30  [ http-nio-7801-exec-1:71 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-18 17:47:10  [ Thread-7:340227 ] - [ DEBUG ]  {conn-10001, pstmt-20000} exit cache
+2018-08-18 17:47:10  [ Thread-7:340237 ] - [ INFO ]  {dataSource-1} closed
+2018-08-18 17:48:02  [ http-nio-7801-exec-1:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-18 17:48:02  [ http-nio-7801-exec-1:58 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-18 17:48:02  [ http-nio-7801-exec-1:106 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-18 17:49:14  [ http-nio-7801-exec-4:72166 ] - [ DEBUG ]  {conn-10001, pstmt-20002} enter cache
+2018-08-18 17:49:14  [ http-nio-7801-exec-4:72202 ] - [ DEBUG ]  {conn-10001, pstmt-20003} enter cache
+2018-08-18 17:57:55  [ http-nio-7801-exec-8:592410 ] - [ DEBUG ]  {conn-10001, pstmt-20004} enter cache
+2018-08-18 17:57:55  [ http-nio-7801-exec-8:592568 ] - [ DEBUG ]  {conn-10001, pstmt-20005} enter cache
+2018-08-18 17:57:55  [ http-nio-7801-exec-8:593032 ] - [ DEBUG ]  create userinfo has spend time is : 734
+2018-08-18 17:58:21  [ http-nio-7801-exec-1:618523 ] - [ DEBUG ]  {conn-10001, pstmt-20006} enter cache
+2018-08-18 17:58:21  [ http-nio-7801-exec-1:618561 ] - [ DEBUG ]  {conn-10001, pstmt-20007} enter cache
+2018-08-18 18:18:04  [ Thread-7:1802120 ] - [ DEBUG ]  {conn-10001, pstmt-20002} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802125 ] - [ DEBUG ]  {conn-10001, pstmt-20003} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802125 ] - [ DEBUG ]  {conn-10001, pstmt-20000} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802126 ] - [ DEBUG ]  {conn-10001, pstmt-20001} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802126 ] - [ DEBUG ]  {conn-10001, pstmt-20004} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802126 ] - [ DEBUG ]  {conn-10001, pstmt-20005} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802129 ] - [ DEBUG ]  {conn-10001, pstmt-20006} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802129 ] - [ DEBUG ]  {conn-10001, pstmt-20007} exit cache
+2018-08-18 18:18:04  [ Thread-7:1802135 ] - [ INFO ]  {dataSource-1} closed
+2018-08-18 18:20:59  [ http-nio-7801-exec-1:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-18 18:20:59  [ Thread-7:6 ] - [ INFO ]  {dataSource-1} closed
+2018-08-18 18:22:33  [ http-nio-7801-exec-1:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-18 18:22:33  [ http-nio-7801-exec-1:67 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-18 18:33:02  [ http-nio-7801-exec-4:629290 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-18 18:33:02  [ Thread-7:629298 ] - [ DEBUG ]  {conn-10001, pstmt-20000} exit cache
+2018-08-18 18:33:02  [ Thread-7:629299 ] - [ DEBUG ]  {conn-10001, pstmt-20001} exit cache
+2018-08-18 18:33:02  [ Thread-7:629306 ] - [ INFO ]  {dataSource-1} closed
