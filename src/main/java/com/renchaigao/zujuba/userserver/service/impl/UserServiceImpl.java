@@ -260,14 +260,14 @@ public class UserServiceImpl implements UserService {
             mongoTemplate.save(myAddressInfo,"AddressInfo");
             userInfo.setMyAddressInfo(myAddressInfo);
 //          创建mySpendInfo
-            userSpendInfo userSpendInfo = new userSpendInfo();
+            UserSpendInfo userSpendInfo = new UserSpendInfo();
             userSpendInfo.setId(userApp.getMySpendInfoId());
             mongoTemplate.save(userSpendInfo);
             userInfo.setMySpendInfo(userSpendInfo);
 //          创建myMessageInfo
 
 //          创建myFriendInfo
-            userFriendInfo userFriendInfo = new userFriendInfo();
+            UserFriendInfo userFriendInfo = new UserFriendInfo();
             userFriendInfo.setId(userApp.getMyFriendInfoId());
             mongoTemplate.save(userFriendInfo);
             userInfo.setMyFreiendInfo(userFriendInfo);
@@ -276,7 +276,7 @@ public class UserServiceImpl implements UserService {
 //          创建peopleList
 
 //          创建myPermissionInfo
-            userPermissionInfo userPermissionInfo = new userPermissionInfo();
+            UserPermissionInfo userPermissionInfo = new UserPermissionInfo();
             userPermissionInfo.setId(userApp.getMyPermissionInfoId());
             mongoTemplate.save(userPermissionInfo);
             userInfo.setMyPermissionInfo(userPermissionInfo);
@@ -284,9 +284,11 @@ public class UserServiceImpl implements UserService {
 //          创建user的openInfo
             UserOpenInfo userOpenInfo = new UserOpenInfo();
             userOpenInfo = JSONObject.parseObject(JSONObject.toJSONString(userSQL),UserOpenInfo.class);
+            userOpenInfo.setUserId(userOpenInfo.getId());
             userOpenInfo.setUpTime(dateUse.GetStringDateNow());
             userOpenInfo.setDeleteStyle(false);
-            mongoTemplate.save(userOpenInfo);
+            userOpenInfoMapper.insert(userOpenInfo);
+            userInfo.setUserOpenInfo(userOpenInfo);
 
             mongoTemplate.save(userInfo);
 
@@ -294,20 +296,22 @@ public class UserServiceImpl implements UserService {
             logger.debug("create userinfo has spend time is : " + (endTime - startTime));
             return new ResponseEntity(RespCode.USERINFOADD, userInfo);
         } else {
+            String userId = userInfo.getId();
             userInfo.setMyTeamsInfo(mongoTemplate.findById(userApp.getMyTeamsId(), myTeamsInfo.class));
             userInfo.setMyPlayGamesInfo(mongoTemplate.findById(userApp.getMyGamesId(), myPlayGamesInfo.class));
             userInfo.setMyStoresInfo(mongoTemplate.findById(userApp.getMyStoresId(), myStoresInfo.class));
             userInfo.setMyPhotoInfo(mongoTemplate.findById(userApp.getPhotoInfoId(), Photo.class));
             userInfo.setMyAddressInfo(mongoTemplate.findById(userApp.getMyAddressId(),AddressInfo.class));
-            userInfo.setMySpendInfo(mongoTemplate.findById(userApp.getMySpendInfoId(), userSpendInfo.class));
-            userInfo.setMyRankInfo(mongoTemplate.findById(userApp.getMyRankInfoId(), UserRank.class));
+            userInfo.setMySpendInfo(mongoTemplate.findById(userApp.getMySpendInfoId(), UserSpendInfo.class));
+//            userInfo.setMyRankInfo(mongoTemplate.findById(userApp.getMyRankInfoId(), UserRank.class));
+            userInfo.setMyRankInfo(userRankMapper.selectByPrimaryKey(userId));
 //          创建myMessageInfo
-            userInfo.setMyFreiendInfo(mongoTemplate.findById(userApp.getMyFriendInfoId(), userFriendInfo.class));
+            userInfo.setMyFreiendInfo(mongoTemplate.findById(userApp.getMyFriendInfoId(), UserFriendInfo.class));
 //          创建myIntegrationInfo
 //          更新userOpenInfo信息
             userInfo.setUserOpenInfo(userOpenInfoMapper.selectByPrimaryKey(userApp.getId()));
 //          创建peopleList
-            userInfo.setMyPermissionInfo(mongoTemplate.findById(userApp.getMyPermissionInfoId(), userPermissionInfo.class));
+            userInfo.setMyPermissionInfo(mongoTemplate.findById(userApp.getMyPermissionInfoId(), UserPermissionInfo.class));
             userInfo.setUpTime(dateUse.GetStringDateNow());
 //          更新MongoDB内的userInfo
             mongoTemplate.save(userInfo);

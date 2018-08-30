@@ -331,3 +331,60 @@ Caused by: java.net.ConnectException: Connection timed out: connect
 2018-08-18 18:33:02  [ Thread-7:629298 ] - [ DEBUG ]  {conn-10001, pstmt-20000} exit cache
 2018-08-18 18:33:02  [ Thread-7:629299 ] - [ DEBUG ]  {conn-10001, pstmt-20001} exit cache
 2018-08-18 18:33:02  [ Thread-7:629306 ] - [ INFO ]  {dataSource-1} closed
+2018-08-20 12:22:47  [ http-nio-7801-exec-5:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-20 12:22:47  [ http-nio-7801-exec-5:70 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-20 12:22:47  [ http-nio-7801-exec-5:173 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-20 12:22:50  [ http-nio-7801-exec-9:3866 ] - [ DEBUG ]  {conn-10001, pstmt-20002} enter cache
+2018-08-20 12:22:51  [ http-nio-7801-exec-9:3973 ] - [ DEBUG ]  {conn-10001, pstmt-20003} enter cache
+2018-08-20 12:22:51  [ http-nio-7801-exec-9:4404 ] - [ DEBUG ]  create userinfo has spend time is : 932
+2018-08-20 12:25:31  [ http-nio-7801-exec-4:164628 ] - [ DEBUG ]  {conn-10001, pstmt-20004} enter cache
+2018-08-20 12:25:31  [ http-nio-7801-exec-4:164700 ] - [ DEBUG ]  {conn-10001, pstmt-20005} enter cache
+2018-08-20 12:25:32  [ http-nio-7801-exec-3:165511 ] - [ DEBUG ]  {conn-10001, pstmt-20006} enter cache
+2018-08-20 12:25:32  [ http-nio-7801-exec-3:165584 ] - [ DEBUG ]  update userinfo has spend time is : 618
+2018-08-20 12:29:05  [ http-nio-7801-exec-9:378598 ] - [ DEBUG ]  update userinfo has spend time is : 424
+2018-08-20 12:29:49  [ http-nio-7801-exec-7:422391 ] - [ DEBUG ]  {conn-10001, pstmt-20007} enter cache
+2018-08-20 12:29:49  [ http-nio-7801-exec-7:422464 ] - [ DEBUG ]  {conn-10001, pstmt-20008} enter cache
+2018-08-20 12:29:52  [ http-nio-7801-exec-1:425475 ] - [ DEBUG ]  {conn-10001, pstmt-20009} enter cache
+2018-08-20 12:35:48  [ http-nio-7801-exec-6:781432 ] - [ DEBUG ]  update userinfo has spend time is : 425
+2018-08-20 12:43:04  [ http-nio-7801-exec-2:1 ] - [ INFO ]  {dataSource-1} inited
+2018-08-20 12:43:04  [ http-nio-7801-exec-2:61 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-20 12:43:46  [ http-nio-7801-exec-1:42152 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-20 12:43:51  [ http-nio-7801-exec-6:46707 ] - [ DEBUG ]  {conn-10002, pstmt-20002} enter cache
+2018-08-20 12:43:51  [ http-nio-7801-exec-6:46836 ] - [ DEBUG ]  {conn-10002, pstmt-20003} enter cache
+2018-08-20 12:43:55  [ http-nio-7801-exec-6:50892 ] - [ DEBUG ]  create userinfo has spend time is : 4773
+2018-08-20 12:44:04  [ http-nio-7801-exec-4:60010 ] - [ DEBUG ]  {conn-10002, pstmt-20004} enter cache
+2018-08-20 12:44:04  [ http-nio-7801-exec-4:60110 ] - [ DEBUG ]  {conn-10002, pstmt-20005} enter cache
+2018-08-20 12:44:52  [ http-nio-7801-exec-1:107794 ] - [ DEBUG ]  {conn-10002, pstmt-20006} enter cache
+2018-08-20 12:44:52  [ http-nio-7801-exec-1:107894 ] - [ DEBUG ]  {conn-10002, pstmt-20007} enter cache
+2018-08-20 12:44:52  [ http-nio-7801-exec-1:107994 ] - [ DEBUG ]  {conn-10002, pstmt-20008} enter cache
+2018-08-20 12:44:53  [ http-nio-7801-exec-3:108807 ] - [ DEBUG ]  {conn-10002, pstmt-20009} enter cache
+2018-08-20 12:44:53  [ http-nio-7801-exec-3:108905 ] - [ DEBUG ]  update userinfo has spend time is : 587
+2018-08-20 12:45:24  [ http-nio-7801-exec-8:139969 ] - [ DEBUG ]  {conn-10002, pstmt-20010} enter cache
+2018-08-20 12:45:25  [ http-nio-7801-exec-9:140909 ] - [ DEBUG ]  create userinfo has spend time is : 679
+2018-08-20 12:50:40  [ http-nio-7801-exec-4:456144 ] - [ DEBUG ]  update userinfo has spend time is : 585
+2018-08-20 13:02:03  [ http-nio-7801-exec-2:1139255 ] - [ DEBUG ]  update userinfo has spend time is : 289264
+2018-08-20 13:02:51  [ http-nio-7801-exec-2:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-20 13:02:52  [ http-nio-7801-exec-2:64 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-20 13:03:05  [ http-nio-7801-exec-1:13884 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-20 13:04:19  [ http-nio-7801-exec-3:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-20 13:04:19  [ http-nio-7801-exec-3:75 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-20 13:04:38  [ http-nio-7801-exec-2:18332 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-20 13:04:39  [ http-nio-7801-exec-1:19572 ] - [ DEBUG ]  {conn-10001, pstmt-20002} enter cache
+2018-08-20 13:04:39  [ http-nio-7801-exec-1:19702 ] - [ DEBUG ]  {conn-10001, pstmt-20003} enter cache
+2018-08-20 13:04:39  [ http-nio-7801-exec-1:20133 ] - [ DEBUG ]  {conn-10001, pstmt-20004} exit cache
+2018-08-20 13:06:51  [ http-nio-7801-exec-1:0 ] - [ INFO ]  {dataSource-1} inited
+2018-08-20 13:06:51  [ http-nio-7801-exec-1:67 ] - [ DEBUG ]  {conn-10001, pstmt-20000} enter cache
+2018-08-20 13:07:02  [ http-nio-7801-exec-2:11048 ] - [ DEBUG ]  {conn-10001, pstmt-20001} enter cache
+2018-08-20 13:07:03  [ http-nio-7801-exec-3:12244 ] - [ DEBUG ]  {conn-10001, pstmt-20002} enter cache
+2018-08-20 13:07:03  [ http-nio-7801-exec-3:12363 ] - [ DEBUG ]  {conn-10001, pstmt-20003} enter cache
+2018-08-20 13:07:03  [ http-nio-7801-exec-3:12788 ] - [ DEBUG ]  {conn-10001, pstmt-20004} enter cache
+2018-08-20 13:07:03  [ http-nio-7801-exec-3:12834 ] - [ DEBUG ]  create userinfo has spend time is : 1110
+2018-08-20 13:07:12  [ http-nio-7801-exec-5:21340 ] - [ DEBUG ]  {conn-10001, pstmt-20005} enter cache
+2018-08-20 13:07:12  [ http-nio-7801-exec-5:21424 ] - [ DEBUG ]  {conn-10001, pstmt-20006} enter cache
+2018-08-20 13:10:25  [ http-nio-7801-exec-9:213926 ] - [ DEBUG ]  {conn-10001, pstmt-20007} enter cache
+2018-08-20 13:10:25  [ http-nio-7801-exec-9:214011 ] - [ DEBUG ]  {conn-10001, pstmt-20008} enter cache
+2018-08-20 13:10:25  [ http-nio-7801-exec-10:214611 ] - [ DEBUG ]  {conn-10001, pstmt-20009} enter cache
+2018-08-20 13:10:25  [ http-nio-7801-exec-10:214688 ] - [ DEBUG ]  {conn-10001, pstmt-20010} enter cache
+2018-08-20 13:10:25  [ http-nio-7801-exec-10:214760 ] - [ DEBUG ]  update userinfo has spend time is : 439
+2018-08-20 13:23:57  [ http-nio-7801-exec-5:1026868 ] - [ DEBUG ]  update userinfo has spend time is : 836
+2018-08-20 14:37:54  [ http-nio-7801-exec-8:5462952 ] - [ DEBUG ]  update userinfo has spend time is : 837
