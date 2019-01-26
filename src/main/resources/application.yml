@@ -1,11 +1,10 @@
 server:
   port: 7801
 
-
 spring:
     datasource:
         name: test
-        url: jdbc:mysql://47.106.149.105:3306/zjb1.0?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+        url: jdbc:mysql://47.106.149.105:3306/zjb?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
         username: root
         password: 123
         # 使用druid数据源

@@ -1,27 +1,27 @@
 package com.renchaigao.zujuba.userserver.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.renchaigao.zujuba.dao.*;
+import com.renchaigao.zujuba.PropertiesConfig.MongoDBCollectionsName;
+import com.renchaigao.zujuba.dao.User;
 import com.renchaigao.zujuba.dao.mapper.*;
 import com.renchaigao.zujuba.domain.response.RespCode;
 import com.renchaigao.zujuba.domain.response.ResponseEntity;
-import com.renchaigao.zujuba.mongoDB.info.*;
+import com.renchaigao.zujuba.mongoDB.info.AddressInfo;
+import com.renchaigao.zujuba.mongoDB.info.VerificationCodeInfo;
 import com.renchaigao.zujuba.mongoDB.info.user.UserInfo;
-import com.renchaigao.zujuba.mongoDB.info.user.myPlayGamesInfo;
-import com.renchaigao.zujuba.mongoDB.info.user.myStoresInfo;
-import com.renchaigao.zujuba.mongoDB.info.user.myTeamsInfo;
 import com.renchaigao.zujuba.userserver.service.UserService;
-import normal.TokenMaker;
-import normal.UUIDUtil;
+import com.renchaigao.zujuba.userserver.uti.LoginUserFunctions;
+import com.renchaigao.zujuba.userserver.uti.SignInUserFunctions;
+import com.renchaigao.zujuba.userserver.uti.UpdateUserFunctions;
 import normal.dateUse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
@@ -56,462 +56,92 @@ public class UserServiceImpl implements UserService {
     UserOpenInfoMapper userOpenInfoMapper;
 
     @Override
-//    自动登陆
-    public ResponseEntity autoLoginUser(User userApp) {
-        String telephone = userApp.getTelephone();
-        List<User> userList = userMapper.selectByTelephone(telephone);
-        if (userList.size()==0){
-            return new ResponseEntity(RespCode.NOUSER,userApp);
-        }
-        User userSql = userList.get(0);
-        String strdate = userSql.getUpTime();
-//          判断token的正误
-        Date date = dateUse.StringToDate(userSql.getUpTime());
-        if (!dateUse.tokenDateCompare(date)) {
-            return new ResponseEntity(RespCode.TOKENOLD, userApp);
-        }
-        if (!userSql.getToken().equals(userApp.getToken())) {
-            return new ResponseEntity(RespCode.TOKENWRONG, userApp);
-        }
-        return checkUserInfoFUNC(telephone, userSql);
-
-    }
-
-    @Override
-//    密码登陆
-    public ResponseEntity secretLoginUser(User userApp) {
-        String telephone = userApp.getTelephone();
-        List<User> userArrayList = userMapper.selectByTelephone(telephone);
-        if (userArrayList.size() == 0) {
-            return new ResponseEntity(RespCode.TELEPHONENOJOIN, userApp);
-        }
-        User userSql = userMapper.selectByTelephone(telephone).get(0);
-        if (userSql.getUserPWD().equals("0")) {
-            return new ResponseEntity(RespCode.PASSWORDMISSING, userApp);
-        }
-        if (userSql.getUserPWD().equals(userApp.getUserPWD())) {
-            return checkUserInfoFUNC(telephone, userSql);
-        } else {
-            return new ResponseEntity(RespCode.WRONGPWD, userApp);
-        }
-    }
-
-    @Override
-//    验证码登陆
-    public ResponseEntity vercodeLoginUser(User userApp, String verCode) {
-        String telephone = userApp.getTelephone();
-        User userSql = userMapper.selectByTelephone(telephone).get(0);
-        if (checkVercode(verCode)) {
-            return checkUserInfoFUNC(telephone, userSql);
-        } else {
-            return new ResponseEntity(RespCode.WRONGPWD, userApp);
-        }
-    }
-
-    @Override
-    //系统添加新用户信息
-    public ResponseEntity addUser(User userApp, String verCode) {
-        String telephone = userApp.getTelephone();
-        String uniqueId = userApp.getUniqueId();
-        User userRet = new User();
-        String token;
-        if (userMapper.selectByTelephone(telephone).size() != 0)
-            return new ResponseEntity(RespCode.USERHAD, userApp);
-        try {
-            if (null != userApp.getTelephone()) {
-//          验证码判断部分
-
-//          验证码判断部分
-                try {
-                    token = TokenMaker.EncoderByMd5(telephone);
-                } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    return new ResponseEntity(RespCode.TOKENEXCEPTION, e);
+    public ResponseEntity SignInUser(String phoneNumber, String verCode,String mode, String jsonObjectString) {
+        SignInUserFunctions signInUserFunctions = new SignInUserFunctions(userMapper, mongoTemplate, userRankMapper, userOpenInfoMapper);
+        switch (mode){
+            case "vercode"://请求获取验证码
+                return signInUserFunctions.SignInUserGetVerCode(phoneNumber);
+            case "signin"://通过验证码注册
+                String verCodeFind;
+                try{
+                    verCodeFind = mongoTemplate.findById(phoneNumber, VerificationCodeInfo.class).getCode();
+                }catch (Exception e){
+                    return new ResponseEntity(RespCode.SIGNIN_WRONG,"Wrong verCode");
                 }
-                /*  为user 配置相应的属性； */
-                //配置id属性;
-                userRet.setId(UUIDUtil.getUUID());
-
-//              注册码注册，密码初始为123456
-                userRet.setUserPWD("123456");
-                //配置age属性;
-                userRet.setAge("0");
-                //配置ageLevel属性;
-                userRet.setAgeLevel("0");
-                //配置realName属性;
-                userRet.setRealName("0");
-                //配置nickName属性;
-                userRet.setNickName("0");
-                //配置idCard属性;
-                userRet.setIdCard("0");
-                //配置gender属性;
-                userRet.setGender("0");
-                //配置job属性;
-                userRet.setJob("0");
-                //配置telephone属性;
-                userRet.setTelephone(telephone);
-                //配置marriage属性;
-                userRet.setMarriage("0");
-                //配置userPWD属性;
-                userRet.setUserPWD("0");
-                //配置picPath属性;
-                userRet.setPicPath("0");
-                //配置deleteStyle属性;
-                userRet.setDeleteStyle(false);
-                //配置myOpenInfoId属性;
-                userRet.setMyOpenInfoId(userRet.getId());
-                //配置userInfoId属性;
-//                userRet.setUserInfoId(UUIDUtil.getUUID());
-                //配置uniqueId属性;
-                userRet.setUniqueId(uniqueId);
-                //配置myTeamsId属性;
-                userRet.setMyTeamsId(userRet.getId());
-                //配置myGamesId属性;
-                userRet.setMyGamesId(userRet.getId());
-                //配置myStoresId属性;
-                userRet.setMyStoresId(userRet.getId());
-                //配置 photoInfoId属性;
-                userRet.setPhotoInfoId(userRet.getId());
-
-                //配置 myAddressId属性;
-                userRet.setMyAddressId(userRet.getId());
-
-                //配置 myRankInfoId属性;
-                userRet.setMyRankInfoId(userRet.getId());
-                //配置 mySpendInfoId属性;
-                userRet.setMySpendInfoId(userRet.getId());
-                //配置 myMessageInfoId属性;
-                userRet.setMyMessageInfoId(userRet.getId());
-                //配置 myFriendInfoId属性;
-                userRet.setMyFriendInfoId(userRet.getId());
-                //配置 myIntegrationInfoId属性;
-                userRet.setMyIntegrationInfoId(userRet.getId());
-                //配置 peopleListId属性;
-                userRet.setPeopleListId(userRet.getId());
-                //配置 myPermissionInfoId属性;
-                userRet.setMyPermissionInfoId(userRet.getId());
-                //配置upTime属性;
-                userRet.setUpTime(dateUse.GetStringDateNow());
-                //配置token属性;
-                userRet.setToken(token);
-
-                if (userMapper.insert(userRet) == 1) {//sql 添加user数据成功；
-
-                    redisTemplate.opsForValue().set(userRet.getId(),
-                            JSONObject.toJSONString(userRet));
-                    return new ResponseEntity(RespCode.SUCCESS, userRet);
+                if (!verCodeFind.equals(verCode)) {
+                    return new ResponseEntity(RespCode.SIGNIN_WRONG, "Wrong verCode");
                 } else {
-                    return new ResponseEntity(RespCode.USERADDFAIL, userRet);
+                    mongoTemplate.remove(Query.query(Criteria.where("_id").is(phoneNumber)),
+                            VerificationCodeInfo.class, MongoDBCollectionsName.MONGO_DB_COLLECIONS_NAME_VERIFICATION_CODE);
+//            创建user信息；
+                    return signInUserFunctions.SignInUserCreateUserInfo(phoneNumber, jsonObjectString);
                 }
-            } else {
-                return new ResponseEntity(RespCode.USERNOTEL, userApp);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity(RespCode.EXCEPTION, e);
         }
+        return new ResponseEntity(RespCode.WRONGIP,"Wrong mode");
     }
 
     @Override
-    public ResponseEntity getUserInfo(User userApp) {
-        long startTime = System.currentTimeMillis();    //获取开始时间
-        UserInfo userInfo = mongoTemplate.findById(userApp.getId(), UserInfo.class);
-        if (userInfo == null)//没有userInfo，创建一个在MongoDB里。
-        {
-
-            User userSQL = userMapper.selectByPrimaryKey(userApp.getId());
-//            先将user内的信息付给userInfo
-            userInfo = JSONObject.parseObject(JSONObject.toJSONString(userApp), UserInfo.class);
-            /*  创建各个object */
-//          创建myRankInfo
-            UserRank userRank = new UserRank();
-            userRank.setId(userApp.getMyRankInfoId());
-            userRank.setDeleteStyle(false);
-            userRank.setUpTime(dateUse.DateToString(new Date()));
-            userRank.setIntegral(0);
-            userRank.setCityIntegralRank(0);
-            userRank.setCountryIntegralRank(0);
-            userRank.setProvinceIntegralRank(0);
-            userRank.setUserId(userApp.getId());
-            userRankMapper.updateByPrimaryKeySelective(userRank);
-            userInfo.setMyRankInfo(userRank);
-            //          创建myTeamsInfo
-            myTeamsInfo myTeamsInfo = new myTeamsInfo();
-            myTeamsInfo.setId(userApp.getMyTeamsId());
-            mongoTemplate.save(myTeamsInfo);
-            userInfo.setMyTeamsInfo(myTeamsInfo);
-//          创建myGamesInfo
-            myPlayGamesInfo myPlayGamesInfo = new myPlayGamesInfo();
-            myPlayGamesInfo.setId(userApp.getMyGamesId());
-            mongoTemplate.save(myPlayGamesInfo);
-            userInfo.setMyPlayGamesInfo(myPlayGamesInfo);
-//          创建myStoresInfo
-            myStoresInfo myStoresInfo = new myStoresInfo();
-            myStoresInfo.setId(userApp.getMyStoresId());
-            mongoTemplate.save(myStoresInfo);
-            userInfo.setMyStoresInfo(myStoresInfo);
-//          创建myPhotoInfo
-            Photo photo = new Photo();
-            photo.setId(userApp.getPhotoInfoId());
-            mongoTemplate.save(photo);
-            userInfo.setMyPhotoInfo(photo);
-//          创建myAddress
-            AddressInfo myAddressInfo = new AddressInfo();
-            myAddressInfo.setId(userApp.getMyAddressId());
-            mongoTemplate.save(myAddressInfo,"AddressInfo");
-            userInfo.setMyAddressInfo(myAddressInfo);
-//          创建mySpendInfo
-            UserSpendInfo userSpendInfo = new UserSpendInfo();
-            userSpendInfo.setId(userApp.getMySpendInfoId());
-            mongoTemplate.save(userSpendInfo);
-            userInfo.setMySpendInfo(userSpendInfo);
-//          创建myMessageInfo
-
-//          创建myFriendInfo
-            UserFriendInfo userFriendInfo = new UserFriendInfo();
-            userFriendInfo.setId(userApp.getMyFriendInfoId());
-            mongoTemplate.save(userFriendInfo);
-            userInfo.setMyFreiendInfo(userFriendInfo);
-//          创建myIntegrationInfo
-
-//          创建peopleList
-
-//          创建myPermissionInfo
-            UserPermissionInfo userPermissionInfo = new UserPermissionInfo();
-            userPermissionInfo.setId(userApp.getMyPermissionInfoId());
-            mongoTemplate.save(userPermissionInfo);
-            userInfo.setMyPermissionInfo(userPermissionInfo);
-
-//          创建user的openInfo
-            UserOpenInfo userOpenInfo = new UserOpenInfo();
-            userOpenInfo = JSONObject.parseObject(JSONObject.toJSONString(userSQL),UserOpenInfo.class);
-            userOpenInfo.setUserId(userOpenInfo.getId());
-            userOpenInfo.setUpTime(dateUse.GetStringDateNow());
-            userOpenInfo.setDeleteStyle(false);
-            userOpenInfoMapper.insert(userOpenInfo);
-            userInfo.setUserOpenInfo(userOpenInfo);
-
-            mongoTemplate.save(userInfo);
-
-            long endTime = System.currentTimeMillis();    //获取结束时间
-            logger.debug("create userinfo has spend time is : " + (endTime - startTime));
-            return new ResponseEntity(RespCode.USERINFOADD, userInfo);
-        } else {
-            String userId = userInfo.getId();
-            userInfo.setMyTeamsInfo(mongoTemplate.findById(userApp.getMyTeamsId(), myTeamsInfo.class));
-            userInfo.setMyPlayGamesInfo(mongoTemplate.findById(userApp.getMyGamesId(), myPlayGamesInfo.class));
-            userInfo.setMyStoresInfo(mongoTemplate.findById(userApp.getMyStoresId(), myStoresInfo.class));
-            userInfo.setMyPhotoInfo(mongoTemplate.findById(userApp.getPhotoInfoId(), Photo.class));
-            userInfo.setMyAddressInfo(mongoTemplate.findById(userApp.getMyAddressId(),AddressInfo.class));
-            userInfo.setMySpendInfo(mongoTemplate.findById(userApp.getMySpendInfoId(), UserSpendInfo.class));
-//            userInfo.setMyRankInfo(mongoTemplate.findById(userApp.getMyRankInfoId(), UserRank.class));
-            userInfo.setMyRankInfo(userRankMapper.selectByPrimaryKey(userId));
-//          创建myMessageInfo
-            userInfo.setMyFreiendInfo(mongoTemplate.findById(userApp.getMyFriendInfoId(), UserFriendInfo.class));
-//          创建myIntegrationInfo
-//          更新userOpenInfo信息
-            userInfo.setUserOpenInfo(userOpenInfoMapper.selectByPrimaryKey(userApp.getId()));
-//          创建peopleList
-            userInfo.setMyPermissionInfo(mongoTemplate.findById(userApp.getMyPermissionInfoId(), UserPermissionInfo.class));
-            userInfo.setUpTime(dateUse.GetStringDateNow());
-//          更新MongoDB内的userInfo
-            mongoTemplate.save(userInfo);
-//            Criteria criteria = Criteria.where("id").ne(userApp.getId());
-//            Update update = Update.update("userInfo", userInfo);
-//            mongoTemplate.updateFirst(Query.query(criteria), update, UserInfo.class);
-//            logger.error(JSONObject.toJSONString(userInfo));
-//        List<TeamInfo> teamInfoList = mongoTemplate.find(Query.query(criteria), TeamInfo.class);
-
-            long endTime = System.currentTimeMillis();    //获取结束时间
-            logger.debug("update userinfo has spend time is : " + (endTime - startTime));
-            return new ResponseEntity(RespCode.SUCCESS, userInfo);
+    public ResponseEntity LoginUser(
+            String loginStyle, String phoneNumber, String userId, String jsonObjectString) {
+        LoginUserFunctions loginUserFunctions = new LoginUserFunctions(userMapper,userLoginMapper);
+//        通过loginStyle判断登录方式；
+        switch (loginStyle) {
+            case "auto":
+//                检查用户是否存在；
+                User user = userMapper.selectByPrimaryKey(userId);
+                if (user == null) {
+                    return new ResponseEntity(RespCode.LOGIN_AUTO_FAIL, "LOGIN_AUTO_FAIL");
+                }
+//          判断token的正误
+                Date date = dateUse.StringToDate(user.getUpTime());
+                if (!dateUse.tokenDateCompare(date)) {
+                    return new ResponseEntity(RespCode.LOGIN_AUTO_WRONG, "LOGIN_AUTO_WRONG");
+                }
+                String userToken = JSONObject.parseObject(jsonObjectString).getString("userToken");
+                if (!userToken.equals(user.getToken())) {
+                    return new ResponseEntity(RespCode.LOGIN_AUTO_WRONG, "LOGIN_AUTO_WRONG");
+                }
+                return loginUserFunctions.checkUserInfoFUNC(user);
+            case "secret":
+//                检查用户账号唯一性
+                List<User> userArrayList = userMapper.selectByTelephone(phoneNumber);
+                if (userArrayList.size() == 0) {
+                    return new ResponseEntity(RespCode.LOGIN_SECRET_WRONG, "LOGIN_SECRET_WRONG");
+                }
+                User usersql = userArrayList.get(0);
+                String userPWD = JSONObject.parseObject(jsonObjectString).getString("userPWD");
+                if (usersql.getUserPWD().equals(userPWD)) {
+                    return loginUserFunctions.checkUserInfoFUNC(usersql);
+                } else {
+                    return new ResponseEntity(RespCode.LOGIN_SECRET_FAIL, "LOGIN_SECRET_FAIL");
+                }
         }
-    }
+        return null;
 
-
-    public ResponseEntity getUpdateInfo(UserInfo userInfo) {
-        UserInfo userInfoMongo = mongoTemplate.findById(userInfo.getId(), UserInfo.class);
-        if (userInfoMongo != null)//没有userInfo，创建一个在MongoDB里。
-        {
-//            Criteria criteria = Criteria.where("id").is(userInfo.getId());
-//            Update update = Update.update("id", userInfo.getId());
-//            mongoTemplate.updateFirst(Query.query(criteria), update, UserInfo.class);
-            mongoTemplate.save(userInfo);
-            return new ResponseEntity(RespCode.SUCCESS, userInfo);
-        } else {
-            return new ResponseEntity(RespCode.USERINFONONE, userInfo);
-        }
     }
 
     @Override
-    public ResponseEntity updateInfo( UserInfo userInfo, String partName) {
-        UserInfo userMongoDB = mongoTemplate.findById(userInfo.getId(), UserInfo.class);
-        String dbString = JSONObject.toJSONString(userMongoDB);
-        User user = new User();
-        switch (partName) {
-            case "address":
-//                sql 增加address数据
-                Address address = userInfo.getMyAddressInfo();
-                if(addressMapper.selectByPrimaryKey(address.getId()) == null)
-                {
-                    addressMapper.insert(address);
-                }else {
-                    addressMapper.updateByPrimaryKey(address);
-                }
-//                userInfo增加addressInfo数据
-                userMongoDB.setMyAddressId(userInfo.getMyAddressInfo().getId());
-                userMongoDB.setMyAddressInfo(userInfo.getMyAddressInfo());
-//                addreInfo增加数据
-                mongoTemplate.save(userInfo.getMyAddressInfo());
-                break;
-            case "myAddressInfo":
-                break;
-//            case "id":
-//                userMongoDB.setId(userInfo.getId());
-//                break;
-//
-//            case "age":
-//                break;
-//
-//            case "ageLevel":
-//                break;
-//
-//            case "realName":
-//                break;
-//
-//            case "nickName":
-//                break;
-//
-//            case "idCard":
-//                break;
-//
-//            case "gender":
-//                break;
-//
-//            case "job":
-//                break;
-//
-//            case "telephone":
-//                break;
-//
-//            case "marriage":
-//                break;
-//
-//            case "userPWD":
-//                break;
-//
-//            case "token":
-//                break;
-//
-//            case "picPath":
-//                break;
-//
-//            case "deleteStyle":
-//                break;
-//
-//            case "upTime":
-//                break;
-//
-//            case "myOpenInfoId":
-//                break;
-//
-//            case "userInfoId":
-//                break;
-//
-//            case "uniqueId":
-//                break;
-//
-//            case "myTeamsId":
-//                break;
-//
-//            case "myGamesId":
-//                break;
-//
-//            case "myStoresId":
-//                break;
-//
-//            case "photoInfoId":
-//                break;
-//
-//            case "myRankInfoId":
-//                break;
-//
-//            case "mySpendInfoId":
-//                break;
-//
-//            case "myMessageInfoId":
-//                break;
-//
-//            case "myFriendInfoId":
-//                break;
-//
-//            case "myIntegrationInfoId":
-//                break;
-//
-//            case "peopleListId":
-//                break;
-//
-//            case "myPermissionInfoId":
-//                break;
-//            case "userId":
-//                break;
-//            case "myTeamsInfo":
-//                break;
-//            case "myPlayGamesInfo":
-//                break;
-//            case "myStoresInfo":
-//                break;
-//            case "myPhotoInfo":
-//                break;
-//            case "mySpendInfo":
-//                break;
-//            case "myRankInfo":
-//                break;
-//            case "myFreiendInfo":
-//                break;
-//            case "myPermissionInfo":
-//                break;
-            case "UserOpenInfo":
-                userMongoDB.setUserOpenInfo(userOpenInfoMapper.selectByPrimaryKey(userMongoDB.getUserOpenInfo().getId()));
-                break;
-        }
-        mongoTemplate.save(userMongoDB, "userInfo");
-        return new ResponseEntity(RespCode.SUCCESS, userMongoDB);
+    public ResponseEntity GetUser(String userId, String jsonObjectString) {
+        SignInUserFunctions signInUserFunctions = new SignInUserFunctions(userMapper, mongoTemplate, userRankMapper, userOpenInfoMapper);
+        UserInfo userInfo = signInUserFunctions.AssembleAllInfo(userId);
+        mongoTemplate.save(userInfo, MongoDBCollectionsName.MONGO_DB_COLLECIONS_NAME_USER_INFO);
+        return new ResponseEntity(RespCode.SUCCESS, userInfo);
     }
 
-    private boolean checkVercode(String verCode) {
-        return true;
-    }
-
-    private ResponseEntity checkUserInfoFUNC(String telephone, User userSql) {
-        String token;
-        UserLogin userLogin = new UserLogin();
-        String nowTime = dateUse.DateToString(new Date());
-        try {
-            token = TokenMaker.EncoderByMd5(telephone);
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return new ResponseEntity(RespCode.TOKENEXCEPTION, e);
+    @Override
+    public ResponseEntity UpdateUser(String updateStyle, String userId, String jsonObjectString) {
+//        String userToken = JSONObject.parseObject(jsonObjectString).getString("userToken");
+        UpdateUserFunctions updateUserFunctions = new UpdateUserFunctions(userMapper,userRankMapper,mongoTemplate);
+        switch (updateStyle) {
+            case "basicInfo":
+                return updateUserFunctions.UpdateUserBasicPartFunction(userId, jsonObjectString);
+            case "addressInfo":
+                return updateUserFunctions.UpdateUserAddressInfoFunction(userId, jsonObjectString);
+//            case "photoInfo":
+//                userMongoDB.setUserOpenInfo(userOpenInfoMapper.selectByPrimaryKey(userMongoDB.getUserOpenInfo().getId()));
+//                break;
         }
-        userSql.setToken(token);//通过判断后，更新token
-        userSql.setUpTime(nowTime);//更新时间
-        userLogin.setDeleteStyle(false);//通过判断后，新增login信息
-        userLogin.setId(UUIDUtil.getUUID());
-        userLogin.setLoginTime(nowTime);
-        userLogin.setUserId(userSql.getId());
-        try {
-            userLoginMapper.insert(userLogin);
-            userMapper.updateByPrimaryKey(userSql);//更新user信息；
-            return new ResponseEntity(RespCode.SUCCESS, userSql);
-        } catch (Exception e) {
-            return new ResponseEntity(RespCode.EXCEPTION, e);
-        } finally {
-//            if (redisTemplate.opsForValue().get(userSql.getId()) == null)
-//                redisTemplate.opsForValue().set(userSql.getId(),
-//                        JSONObject.toJSONString(userSql));
-//            else {
-//                redisTemplate.opsForValue().
-//            }
-        }
+        return new ResponseEntity(RespCode.WARN, "wrong part");
     }
 
 }
